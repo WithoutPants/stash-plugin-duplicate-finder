@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime/debug"
 	"strings"
 
 	"stash-plugin-duplicate-finder/internal/plugin/common"
@@ -68,7 +69,14 @@ func (a *api) Run(input common.PluginInput, output *common.PluginOutput) error {
 	return nil
 }
 
-func (a *api) runImpl(input common.PluginInput) error {
+func (a *api) runImpl(input common.PluginInput) (err error) {
+	defer func() {
+		// handle panic
+		if r := recover(); r != nil {
+			err = fmt.Errorf("panic: %v\nstacktrace: %s", r, string(debug.Stack()))
+		}
+	}()
+
 	pluginDir := input.ServerConnection.PluginDir
 	cfg, err := readConfig(filepath.Join(pluginDir, "duplicate-finder.cfg"))
 	if err != nil {
