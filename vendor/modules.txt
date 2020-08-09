@@ -1,0 +1,15 @@
+# github.com/natefinch/pie v0.0.0-20170715172608-9a0d72014007
+github.com/natefinch/pie
+# github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+github.com/nfnt/resize
+# github.com/rivo/duplo v0.0.0-20180323201418-c4ec823d58cd
+github.com/rivo/duplo
+github.com/rivo/duplo/haar
+# github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f
+github.com/shurcooL/graphql
+github.com/shurcooL/graphql/ident
+github.com/shurcooL/graphql/internal/jsonutil
+# golang.org/x/net v0.0.0-20200707034311-ab3426394381
+golang.org/x/net/context/ctxhttp
+# gopkg.in/yaml.v2 v2.3.0
+gopkg.in/yaml.v2

@@ -1,0 +1,5 @@
+dist
+
+*.exe
+stash-plugin-duplicate-finder
+.vscode
