@@ -102,6 +102,7 @@ func (a *api) runImpl(input common.PluginInput) (err error) {
 		}
 
 		a.duplicateTagID = tagID
+		log.Debugf("Duplicate tag id = %v", *a.duplicateTagID)
 	}
 
 	// find where the generated sprite files are stored
@@ -114,12 +115,16 @@ func (a *api) runImpl(input common.PluginInput) (err error) {
 
 	log.Info("Processing files for perceptual hashes...")
 	m := make(matchInfoMap)
+	foundDupes := 0
 
 	hdFunc := func(checksum string, matches duplo.Matches) {
-		for _, match := range matches {
-			m.add(checksum, match.ID.(string), match.Score)
-			a.logDuplicate(checksum, match)
-			a.handleDuplicate(m, checksum, true)
+		if len(matches) > 0 {
+			foundDupes++
+			for _, match := range matches {
+				m.add(checksum, match.ID.(string), match.Score)
+				a.logDuplicate(checksum, match)
+				a.handleDuplicate(m, checksum, true)
+			}
 		}
 	}
 
@@ -128,6 +133,7 @@ func (a *api) runImpl(input common.PluginInput) (err error) {
 		return err
 	}
 
+	log.Infof("Found %d duplicate scenes", foundDupes)
 	return nil
 }
 
