@@ -115,34 +115,25 @@ type BulkUpdateIds struct {
 	Mode graphql.String `graphql:"mode" json:"mode"`
 }
 
-type BulkSceneUpdateInput struct {
-	IDs     []graphql.ID   `graphql:"ids" json:"ids"`
-	Details graphql.String `graphql:"details" json:"details"`
-	TagIds  *BulkUpdateIds `graphql:"tag_ids" json:"tag_ids"`
-}
-
 func updateScene(client *graphql.Client, s Scene, details string, duplicateTagID *graphql.ID) error {
 	// use BulkSceneUpdateInput since sceneUpdate requires performers, etc.
 	var m struct {
-		SceneUpdate []SceneUpdate `graphql:"bulkSceneUpdate(input: $s)"`
+		SceneUpdate []SceneUpdate `graphql:"bulkSceneUpdate(input: {ids: $ids, details: $details, tag_ids: $tag_ids})"`
 	}
 
-	input := BulkSceneUpdateInput{
-		IDs:     []graphql.ID{s.ID},
-		Details: graphql.String(details),
-	}
+	ids := []graphql.ID{s.ID}
+	detailsInput := graphql.String(details)
+	tagIds := &BulkUpdateIds{}
 
 	if duplicateTagID != nil {
-		tagIds := &BulkUpdateIds{
-			IDs:  s.getTagIds(),
-			Mode: "ADD",
-		}
+		tagIds.Mode = "ADD"
 		tagIds.IDs = addTagId(tagIds.IDs, *duplicateTagID)
-		input.TagIds = tagIds
 	}
 
 	vars := map[string]interface{}{
-		"s": input,
+		"ids":     ids,
+		"details": detailsInput,
+		"tag_ids": tagIds,
 	}
 
 	err := client.Mutate(context.Background(), &m, vars)
