@@ -91,7 +91,9 @@ func (a *api) runImpl(input common.PluginInput) (err error) {
 	a.client = util.NewClient(input.ServerConnection)
 	a.cache = newSceneCache(a.client)
 
-	clearSceneErrors(a.client)
+	if a.cfg.AddSceneError {
+		clearSceneErrors(a.client)
+	}
 
 	if cfg.AddTagName != "" {
 		tagID, err := getDuplicateTagId(a.client, cfg.AddTagName)
