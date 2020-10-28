@@ -185,7 +185,20 @@ func (a *api) processFile(fn string, store *duplo.Store, hdFunc handleDuplicates
 	}
 
 	matches := getHashMatches(store, checksum, *hash, a.cfg.Threshold)
-	hdFunc(checksum, matches)
+
+	// remove any matches that no longer exist
+	var filteredMatches duplo.Matches
+	path := filepath.Dir(fn)
+	for _, m := range matches {
+		dupeSprite := getSpriteFilename(path, m.ID.(string))
+		if _, err := os.Stat(dupeSprite); os.IsNotExist(err) {
+			store.Delete(m.ID)
+		} else {
+			filteredMatches = append(filteredMatches, m)
+		}
+	}
+
+	hdFunc(checksum, filteredMatches)
 
 	if !existing {
 		store.Add(checksum, *hash)
@@ -275,4 +288,8 @@ func isSpriteFile(fn string) bool {
 func getChecksum(fn string) string {
 	baseName := filepath.Base(fn)
 	return strings.Replace(baseName, spriteSuffix, "", -1)
+}
+
+func getSpriteFilename(path, checksum string) string {
+	return filepath.Join(path, checksum+spriteSuffix)
 }

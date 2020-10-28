@@ -10,6 +10,8 @@ Untar the release for your platform into your `plugins` stash directory and relo
 
 A documented default configuration file is included. 
 
+*NOTE:* the plugin uses the sprite files to find duplicates. This means that if you remove a file from your stash library but do not remove the generated files (specifically the generated sprite file), then the plugin will continue to use the sprite file for duplicate detection.
+
 # How to build
 
 `make build` - builds the plugin executable for your platform
