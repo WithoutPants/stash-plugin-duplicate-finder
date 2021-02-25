@@ -9,7 +9,7 @@ OUTPUT := plugin_duplicate_finder
 build:
 	go build -o $(OUTPUT)$(EXT)
 
-LDFLAGS := -ldflags "-extldflags '-s -w'"
+LDFLAGS := -ldflags "-extldflags '-static -s -w'"
 LDFLAGS_WIN := -ldflags "-extldflags '-static -s -w'"
 
 cross-compile-win: 
@@ -19,10 +19,10 @@ cross-compile-osx:
 	GOOS=darwin GOARCH=amd64 CC=o64-clang CXX=o64-clang++ go build $(LDFLAGS) -mod=vendor -o "dist/osx/$(OUTPUT)"
 
 cross-compile-linux:
-	go build $(LDFLAGS) -mod=vendor -o "dist/linux/$(OUTPUT)"
+	go build -tags "osusergo netgo" $(LDFLAGS) -mod=vendor -o "dist/linux/$(OUTPUT)"
 
 cross-compile-pi:
-	GOOS=linux GOARCH=arm GOARM=5 CC=arm-linux-gnueabi-gcc go build $(LDFLAGS) -mod=vendor -o "dist/pi/$(OUTPUT)"
+	GOOS=linux GOARCH=arm GOARM=5 CC=arm-linux-gnueabi-gcc go build -tags "osusergo netgo"  $(LDFLAGS) -mod=vendor -o "dist/pi/$(OUTPUT)"
 
 cross-compile-all: cross-compile-win cross-compile-osx cross-compile-linux cross-compile-pi
 
