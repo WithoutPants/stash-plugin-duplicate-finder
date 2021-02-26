@@ -1,0 +1,58 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  release:
+    types: [ published ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Checkout
+      run: git fetch --prune --unshallow --tags
+
+    - name: Cross Compile
+      run: make build-release-docker
+
+    - name: Upload Windows release
+      # only upload binaries for pull requests
+      if: ${{ github.event_name == 'pull_request'}}
+      uses: actions/upload-artifact@v2
+      with:
+        name: stash-plugin-duplicate-finder-win.tar
+        path: dist/stash-plugin-duplicate-finder-win.tar
+
+    - name: Upload OSX release
+      # only upload binaries for pull requests
+      if: ${{ github.event_name == 'pull_request'}}
+      uses: actions/upload-artifact@v2
+      with:
+        name: stash-plugin-duplicate-finder-osx.tar
+        path: dist/stash-plugin-duplicate-finder-osx.tar
+
+    - name: Upload Linux release
+      # only upload binaries for pull requests
+      if: ${{ github.event_name == 'pull_request'}}
+      uses: actions/upload-artifact@v2
+      with:
+        name: stash-plugin-duplicate-finder-linux.tar
+        path: dist/stash-plugin-duplicate-finder-linux.tar
+        
+    - name: Master release
+      if: ${{ github.event_name == 'release' }}
+      uses: meeDamian/github-release@2.0
+      with:
+        token: "${{ secrets.GITHUB_TOKEN }}"
+        files: |
+          dist/stash-plugin-duplicate-finder-win.tar
+          dist/stash-plugin-duplicate-finder-osx.tar
+          dist/stash-plugin-duplicate-finder-linux.tar
+          dist/stash-plugin-duplicate-finder-pi.tar
+        gzip: false
+    

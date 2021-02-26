@@ -47,7 +47,7 @@ build-release-pi: cross-compile-pi
 	tar -cf dist/stash-plugin-duplicate-finder-pi.tar -C dist/pi $(OUTPUT)
 	tar -rf dist/stash-plugin-duplicate-finder-pi.tar $(RELEASE_INC)
 
-RUN_DOCKER := docker run --rm --mount type=bind,source="$(shell pwd)",target=/stash -w /stash stashapp/compiler:develop /bin/bash -c
+RUN_DOCKER := docker run --rm --mount type=bind,source="$(shell pwd)",target=/stash -w /stash stashapp/compiler:4 /bin/bash -c
 
 cross-compile-docker:
 	$(RUN_DOCKER) "make cross-compile-all"
