@@ -44,3 +44,25 @@ func readConfig(fn string) (*config, error) {
 
 	return ret, nil
 }
+
+// HACK - read the host from the server config - this should be provided
+// by the server itself
+type serverConfig struct {
+	Host string `yaml:"host"`
+}
+
+func readServerConfig(fn string) (*serverConfig, error) {
+	ret := &serverConfig{}
+
+	file, err := os.Open(fn)
+	defer file.Close()
+	if err != nil {
+		return nil, err
+	}
+	parser := yaml.NewDecoder(file)
+	if err := parser.Decode(&ret); err != nil {
+		return nil, err
+	}
+
+	return ret, nil
+}

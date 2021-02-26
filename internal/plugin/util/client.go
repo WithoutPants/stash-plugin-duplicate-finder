@@ -3,10 +3,10 @@
 package util
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
-	"strconv"
 
 	"github.com/shurcooL/graphql"
 
@@ -15,11 +15,8 @@ import (
 
 // NewClient creates a graphql Client connecting to the stash server using
 // the provided server connection details.
-// Always connects to the graphql endpoint of the localhost.
-func NewClient(provider common.StashServerConnection) *graphql.Client {
-	portStr := strconv.Itoa(provider.Port)
-
-	u, _ := url.Parse("http://localhost:" + portStr + "/graphql")
+func NewClient(provider common.StashServerConnection, addr string) *graphql.Client {
+	u, _ := url.Parse(fmt.Sprintf("http://%s:%d/graphql", addr, provider.Port))
 	u.Scheme = provider.Scheme
 
 	cookieJar, _ := cookiejar.New(nil)

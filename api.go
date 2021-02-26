@@ -88,7 +88,13 @@ func (a *api) runImpl(input common.PluginInput) (err error) {
 		a.cfg.DBFilename = filepath.Join(pluginDir, a.cfg.DBFilename)
 	}
 
-	a.client = util.NewClient(input.ServerConnection)
+	// HACK - get the server address from the server config file
+	serverCfg, err := readServerConfig(filepath.Join(input.ServerConnection.Dir, "config.yml"))
+	if err != nil {
+		return fmt.Errorf("error reading server configuration file: %s", err.Error())
+	}
+
+	a.client = util.NewClient(input.ServerConnection, serverCfg.Host)
 	a.cache = newSceneCache(a.client)
 
 	if cfg.AddTagName != "" {
