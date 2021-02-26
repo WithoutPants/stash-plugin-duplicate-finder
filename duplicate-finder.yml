@@ -1,6 +1,6 @@
 name: Duplicate File Finder
 description: Finds perceptually duplicate scenes using sprite files.
-version: 0.1.4
+version: 0.1.5
 url: https://github.com/WithoutPants/stash-plugin-duplicate-finder
 exec:
   - plugin_duplicate_finder
