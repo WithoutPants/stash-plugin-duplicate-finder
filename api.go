@@ -97,6 +97,10 @@ func (a *api) runImpl(input common.PluginInput) (err error) {
 	a.client = util.NewClient(input.ServerConnection, serverCfg.Host)
 	a.cache = newSceneCache(a.client)
 
+	if a.cfg.AddSceneError {
+		clearSceneErrors(a.client)
+	}
+
 	if cfg.AddTagName != "" {
 		tagID, err := getDuplicateTagId(a.client, cfg.AddTagName)
 		if err != nil {
@@ -246,6 +250,13 @@ func (a *api) handleDuplicate(m matchInfoMap, checksum string, recurse bool) {
 		}
 
 		newDetails += fmt.Sprintf("\nDuplicate ID: %s (score: %.f)", s.ID, -match.score)
+
+		if a.cfg.AddSceneError {
+			err = addSceneError(a.client, *subject, s.ID)
+			if err != nil {
+				log.Errorf("Error pushing scene error: %s", err.Error())
+			}
+		}
 
 		if recurse {
 			a.handleDuplicate(m, match.other, false)

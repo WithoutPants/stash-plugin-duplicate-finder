@@ -164,3 +164,49 @@ func getDuplicateTagId(client *graphql.Client, tagName string) (*graphql.ID, err
 
 	return nil, err
 }
+
+func clearSceneErrors(client *graphql.Client) error {
+	var m struct {
+		ClearRecurring bool `graphql:"clearRecurringSceneErrors(type: $recurringType)"`
+	}
+
+	typeInput := graphql.String("perceptual")
+
+	vars := map[string]interface{}{
+		"recurringType": typeInput,
+	}
+
+	err := client.Mutate(context.Background(), &m, vars)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type SceneError struct {
+	Scene SceneUpdate `graphql:"scene"`
+}
+
+func addSceneError(client *graphql.Client, s Scene, dupeID graphql.ID) error {
+	var m struct {
+		AddSceneError SceneError `graphql:"addSceneError(input: {scene_id: $scene_id, related_scene_id: $related_scene_id, recurring: $recurring, error_type: $error_type})"`
+	}
+
+	recurringInput := graphql.String("perceptual")
+	errorTypeInput := graphql.String("Perceptual Duplicate")
+
+	vars := map[string]interface{}{
+		"scene_id":         s.ID,
+		"related_scene_id": dupeID,
+		"recurring":        recurringInput,
+		"error_type":       errorTypeInput,
+	}
+
+	err := client.Mutate(context.Background(), &m, vars)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

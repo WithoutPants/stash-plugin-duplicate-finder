@@ -7,11 +7,12 @@ import (
 )
 
 type config struct {
-	DBFilename string `yaml:"db_filename"`
-	Threshold  int    `yaml:"threshold"`
-	AddTagName string `yaml:"add_tag_name"`
-	AddDetails bool   `yaml:"add_details"`
-	NewOnly    bool   `yaml:"new_only"`
+	DBFilename    string `yaml:"db_filename"`
+	Threshold     int    `yaml:"threshold"`
+	AddTagName    string `yaml:"add_tag_name"`
+	AddDetails    bool   `yaml:"add_details"`
+	NewOnly       bool   `yaml:"new_only"`
+	AddSceneError bool   `yaml:"add_scene_error"`
 }
 
 func readConfig(fn string) (*config, error) {
