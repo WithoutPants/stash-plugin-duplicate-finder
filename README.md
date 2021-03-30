@@ -6,13 +6,13 @@ Optionally, it can tag duplicate scenes with a (existing) tag, and it can popula
 
 # How to use
 
-Untar the release for your platform into your `plugins` stash directory and reload plugins (or restart stash). A new task should be present in the Tasks page.
+This plugin is released with binaries for multiple platforms. Most people should not need to compile their own. Just un-tar the release for your platform into your `plugins` stash directory and reload plugins (or restart stash). A new task should be present in the Tasks page.
 
-A documented default configuration file is included. 
+You may need to edit the config.yml file before running the plugin.  It is well-documented within the file.
 
 *NOTE:* the plugin uses the sprite files to find duplicates. This means that if you remove a file from your stash library but do not remove the generated files (specifically the generated sprite file), then the plugin will continue to use the sprite file for duplicate detection.
 
-# How to build
+# How to build from source
 
 `make build` - builds the plugin executable for your platform
 `make build-release-docker` - performs cross compilation in the `stashapp/compiler:develop` docker image and builds release tars
